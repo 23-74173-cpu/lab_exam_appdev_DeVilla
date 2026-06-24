@@ -77,15 +77,16 @@ export function QuizScreen() {
   const [isExamFinished, setIsExamFinished] = useState(false);
 
   const currentQuestion = MOCK_QUESTIONS[currentQuestionIndex];
+  const isAnswered = selectedOption !== null;
   const isLastQuestion = currentQuestionIndex === MOCK_QUESTIONS.length - 1;
-  const canProceed = selectedOption !== null;
+  const canProceed = isAnswered;
 
   const handleSelect = useCallback((index: number) => {
     setSelectedOption(index);
   }, []);
 
   const handleProceed = useCallback(() => {
-    if (selectedOption !== null) {
+    if (selectedOption === currentQuestion.correctAnswerIndex) {
       setScore((prev) => prev + 1);
     }
 
@@ -95,7 +96,7 @@ export function QuizScreen() {
       setCurrentQuestionIndex((prev) => prev + 1);
       setSelectedOption(null);
     }
-  }, [selectedOption, isLastQuestion]);
+  }, [selectedOption, currentQuestion, isLastQuestion]);
 
   const handleRestart = useCallback(() => {
     setCurrentQuestionIndex(0);
@@ -107,13 +108,11 @@ export function QuizScreen() {
   if (isExamFinished) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <ResultsScreen
-            score={score}
-            total={MOCK_QUESTIONS.length}
-            onRestart={handleRestart}
-          />
-        </ScrollView>
+        <ResultsScreen
+          score={score}
+          total={MOCK_QUESTIONS.length}
+          onRestart={handleRestart}
+        />
       </SafeAreaView>
     );
   }
@@ -140,6 +139,8 @@ export function QuizScreen() {
               option={option}
               index={idx}
               selectedOption={selectedOption}
+              correctAnswerIndex={currentQuestion.correctAnswerIndex}
+              isAnswered={isAnswered}
               onSelect={handleSelect}
             />
           ))}

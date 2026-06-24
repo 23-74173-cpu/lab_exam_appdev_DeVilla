@@ -7,23 +7,46 @@ export function QuizOption({
   option,
   index,
   selectedOption,
+  correctAnswerIndex,
+  isAnswered,
   onSelect,
 }: QuizOptionProps) {
   const isSelected = index === selectedOption;
+  const isCorrect = index === correctAnswerIndex;
+
+  let borderColor = ExamColors.border;
+  let bgColor = 'transparent';
+  let showBadge: string | null = null;
+  let dim = 1;
+
+  if (isAnswered) {
+    if (isCorrect) {
+      borderColor = ExamColors.correctFrame;
+      bgColor = ExamColors.correctCanvas;
+      showBadge = '✅';
+    } else if (isSelected) {
+      borderColor = ExamColors.incorrectFrame;
+      bgColor = ExamColors.incorrectCanvas;
+      showBadge = '❌';
+    } else {
+      dim = 0.45;
+    }
+  } else if (isSelected) {
+    borderColor = ExamColors.primary;
+  }
 
   return (
     <TouchableOpacity
-      style={[styles.option, { borderColor: isSelected ? ExamColors.primary : ExamColors.border }]}
+      style={[styles.option, { borderColor, backgroundColor: bgColor, opacity: dim }]}
       onPress={() => onSelect(index)}
+      disabled={isAnswered}
       activeOpacity={0.7}
     >
       <View style={styles.row}>
-        <View style={[styles.radio, { borderColor: isSelected ? ExamColors.primary : ExamColors.border }]}>
-          {isSelected && <View style={styles.radioInner} />}
-        </View>
         <Text style={[styles.optionText, { color: ExamColors.secondaryText }]}>
           {option}
         </Text>
+        {showBadge && <Text style={styles.badge}>{showBadge}</Text>}
       </View>
     </TouchableOpacity>
   );
@@ -31,38 +54,20 @@ export function QuizOption({
 
 const styles = StyleSheet.create({
   option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     padding: 16,
     borderRadius: 12,
     borderWidth: 2,
     marginBottom: 12,
     minHeight: 56,
+    justifyContent: 'center',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
-    gap: 12,
-  },
-  radio: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: ExamColors.primary,
+    justifyContent: 'space-between',
   },
   optionText: {
     fontSize: 16,
-    flex: 1,
     lineHeight: 24,
   },
   badge: {
