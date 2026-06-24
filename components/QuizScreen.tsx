@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Timer } from 'lucide-react-native';
 
 import { ExamColors } from '@/constants/theme';
 import type { Question } from '@/types/quiz';
@@ -75,6 +76,15 @@ export function QuizScreen() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [isExamFinished, setIsExamFinished] = useState(false);
+  const [timerDisplay, setTimerDisplay] = useState(30);
+
+  useEffect(() => {
+    if (isExamFinished) return;
+    const id = setInterval(() => {
+      setTimerDisplay((prev) => (prev <= 1 ? 30 : prev - 1));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [isExamFinished]);
 
   const currentQuestion = MOCK_QUESTIONS[currentQuestionIndex];
   const isAnswered = selectedOption !== null;
@@ -122,6 +132,12 @@ export function QuizScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Text style={styles.category}>{currentQuestion.category}</Text>
+          <View style={styles.timerPill}>
+            <Timer size={16} color={timerDisplay <= 5 ? ExamColors.incorrectFrame : ExamColors.primaryText} />
+            <Text style={[styles.timerText, timerDisplay <= 5 && styles.timerUrgent]}>
+              {timerDisplay}s
+            </Text>
+          </View>
         </View>
 
         <Text style={styles.meta}>
@@ -181,6 +197,24 @@ const styles = StyleSheet.create({
     color: ExamColors.primary,
     letterSpacing: 1,
     textTransform: 'uppercase',
+  },
+  timerPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: ExamColors.border,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  timerText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: ExamColors.primaryText,
+    fontVariant: ['tabular-nums'],
+  },
+  timerUrgent: {
+    color: ExamColors.incorrectFrame,
   },
   meta: {
     fontSize: 14,
