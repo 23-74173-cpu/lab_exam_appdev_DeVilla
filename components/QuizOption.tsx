@@ -13,12 +13,14 @@ export function QuizOption({
 
   return (
     <TouchableOpacity
-      style={[styles.option, { borderColor: ExamColors.border }]}
+      style={[styles.option, { borderColor: isSelected ? ExamColors.primary : ExamColors.border }]}
       onPress={() => onSelect(index)}
       activeOpacity={0.7}
     >
       <View style={styles.row}>
-        <View style={[styles.radio, { borderColor: ExamColors.border }]} />
+        <View style={[styles.radio, { borderColor: isSelected ? ExamColors.primary : ExamColors.border }]}>
+          {isSelected && <View style={styles.radioInner} />}
+        </View>
         <Text style={[styles.optionText, { color: ExamColors.secondaryText }]}>
           {option}
         </Text>
