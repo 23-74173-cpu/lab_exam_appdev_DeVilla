@@ -8,7 +8,7 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ current, total }: ProgressBarProps) {
-  const pct = total > 0 ? ((current + 1) / total) * 100 : 0;
+  const pct = total > 0 ? (current / total) * 100 : 0;
 
   return (
     <View style={styles.track}>

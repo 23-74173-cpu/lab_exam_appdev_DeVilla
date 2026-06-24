@@ -10,7 +10,5 @@ export interface QuizOptionProps {
   option: string;
   index: number;
   selectedOption: number | null;
-  correctAnswerIndex: number;
-  isAnswered: boolean;
   onSelect: (index: number) => void;
 }

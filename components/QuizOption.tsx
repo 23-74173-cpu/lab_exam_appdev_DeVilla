@@ -7,51 +7,22 @@ export function QuizOption({
   option,
   index,
   selectedOption,
-  correctAnswerIndex,
-  isAnswered,
   onSelect,
 }: QuizOptionProps) {
-  const isCorrectAnswer = index === correctAnswerIndex;
   const isSelected = index === selectedOption;
-
-  let borderColor = ExamColors.border;
-  let backgroundColor = 'transparent';
-  let radioBorder = ExamColors.border;
-  let showCheck: string | null = null;
-  let opacity: number = 1;
-
-  if (isAnswered) {
-    if (isCorrectAnswer) {
-      borderColor = ExamColors.correctFrame;
-      backgroundColor = ExamColors.correctCanvas;
-      radioBorder = ExamColors.correctFrame;
-      showCheck = '✅';
-    } else if (isSelected) {
-      borderColor = ExamColors.incorrectFrame;
-      backgroundColor = ExamColors.incorrectCanvas;
-      radioBorder = ExamColors.incorrectFrame;
-      showCheck = '❌';
-    } else {
-      opacity = 0.45;
-    }
-  }
 
   return (
     <TouchableOpacity
-      style={[styles.option, { borderColor, backgroundColor, opacity }]}
+      style={[styles.option, { borderColor: ExamColors.border }]}
       onPress={() => onSelect(index)}
-      disabled={isAnswered}
       activeOpacity={0.7}
     >
       <View style={styles.row}>
-        <View style={[styles.radio, { borderColor: radioBorder, backgroundColor: isSelected && !isAnswered ? ExamColors.primary : 'transparent' }]}>
-          {isSelected && !isAnswered && <View style={styles.radioInner} />}
-        </View>
+        <View style={[styles.radio, { borderColor: ExamColors.border }]} />
         <Text style={[styles.optionText, { color: ExamColors.secondaryText }]}>
           {option}
         </Text>
       </View>
-      {showCheck && <Text style={styles.badge}>{showCheck}</Text>}
     </TouchableOpacity>
   );
 }
